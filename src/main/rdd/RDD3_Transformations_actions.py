@@ -47,8 +47,79 @@ distinct_rdd = union_rdd.distinct()
 print("distinct_rdd: ",distinct_rdd.collect())
 #distinct_rdd:  [4, 1, 5, 2, 6, 3, 7]
 
-input_tuple_data = [("Cake", 1), ("Fruits", 2), ("Groceries", 3), ("Fruits", 4), ("Cake", 6)]
+input_tuple_data = [("Cake", 1), ("Fruits", 2), ("Groceries", 3), ("Fruits", 4), ("Cake", 6), ("Cake", 1), ("Fruits", 4)]
 new_rdd = sc.parallelize(input_tuple_data)
+
+count_by_key_rdd = new_rdd.countByKey()
+
+for k, v in count_by_key_rdd.items():
+    print("count_by_key_rdd: Key:", k)
+    print("count_by_key_rdd: value:", v)
+'''
+count_by_key_rdd: Key: Cake
+count_by_key_rdd: value: 2
+count_by_key_rdd: Key: Fruits
+count_by_key_rdd: value: 2
+count_by_key_rdd: Key: Groceries
+count_by_key_rdd: value: 1
+'''
+count_by_value_rdd = new_rdd.countByValue()
+
+for k, v in count_by_value_rdd.items():
+    print("count_by_value_rdd: Key:", k)
+    print("count_by_value_rdd: value:", v)
+
+'''
+count_by_value_rdd: Key: ('Cake', 1)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Fruits', 2)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Groceries', 3)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Fruits', 4)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Cake', 6)
+count_by_value_rdd: value: 1
+'''
+
+'''
+count_by_value_rdd: Key: ('Cake', 1)
+count_by_value_rdd: value: 2
+
+count_by_value_rdd: Key: ('Fruits', 2)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Groceries', 3)
+count_by_value_rdd: value: 1
+
+count_by_value_rdd: Key: ('Fruits', 4)
+count_by_value_rdd: value: 2
+
+count_by_value_rdd: Key: ('Cake', 6)
+count_by_value_rdd: value: 1
+'''
+
+#input_tuple_data = [("Cake", 1), ("Fruits", 2), ("Groceries", 3), ("Fruits", 4), ("Cake", 6), ("Cake", 1), ("Fruits", 4)]
+
+collect_map_rdd = new_rdd.collectAsMap()
+for k, v in collect_map_rdd.items():
+    print("collect_map_rdd: key: ",k)
+    print("collect_map_rdd: value: ",v)
+
+'''
+collect_map_rdd: key:  Cake
+collect_map_rdd: value:  1
+
+collect_map_rdd: key:  Fruits
+collect_map_rdd: value:  4
+
+collect_map_rdd: key:  Groceries
+collect_map_rdd: value:  3
+'''
 grouped_rdd = new_rdd.groupByKey()
 
 collected_data = grouped_rdd.collect()
@@ -81,6 +152,19 @@ group_by_rdd value:  [('Groceries', 3)]
 group_by_rdd key:  Cake
 group_by_rdd value:  [('Cake', 1), ('Cake', 6)]
 '''
-sorted_rdd = new_rdd.sortByKey()
-print("sorted_rdd: ", sorted_rdd.collect())
+sorted_rdd_asc = new_rdd.sortByKey()
+print("sorted_rdd_asc: ", sorted_rdd_asc.collect())
 #sorted_rdd:  [('Cake', 1), ('Cake', 6), ('Fruits', 2), ('Fruits', 4), ('Groceries', 3)]
+
+sorted_rdd_desc = new_rdd.sortByKey(ascending=False)
+print("sorted_rdd_desc: ", sorted_rdd_desc.collect())
+#sorted_rdd_desc:  [('Groceries', 3), ('Fruits', 2), ('Fruits', 4), ('Cake', 1), ('Cake', 6)]
+
+data = [1,2,3,4,5]
+original_rdd = sc.parallelize(data)
+print("original_rdd: ", original_rdd.getNumPartitions())
+#original_rdd:  2
+
+new_rdd_add_partitions = sc.parallelize(data, 4)
+print("new_rdd_add_partitions", new_rdd_add_partitions.getNumPartitions())
+#new_rdd_add_partitions 4
