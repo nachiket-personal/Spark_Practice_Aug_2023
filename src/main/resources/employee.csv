@@ -1,6 +1,0 @@
-empid,name,age,dept,salary,gender
-1,Daniel,32,IT,80000.50,'M'
-2,Alex,33,Comp,78000.25,'M'
-3,Angelina,25,Finance,93000.30,'F'
-4,Bob,44,Audit,99000.99,'M'
-5,Charlie,44,Audit,99000.99,'F'
