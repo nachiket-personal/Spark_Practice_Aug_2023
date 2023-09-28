@@ -1,4 +1,4 @@
-from SparkContextHandler import create_spark_context
+from src.main.utilities.SparkContextHandler import create_spark_context
 import os.path as path
 import shutil
 

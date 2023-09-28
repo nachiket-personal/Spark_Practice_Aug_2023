@@ -1,4 +1,4 @@
-from SparkContextHandler import create_spark_context
+from src.main.utilities.SparkContextHandler import create_spark_context
 import os.path as path
 import shutil
 
@@ -10,7 +10,7 @@ def read_text_file(input_path):
     input_rdd = sc.textFile(input_path)
     return input_rdd
 
-sc = create_spark_context("yarn", "EmployeeTransformationsExample")
+sc = create_spark_context("local[2]", "EmployeeSalaryIncrementExample")
 emp_input_path = "..\\resources\\input\\employee.csv"
 emp_rdd = read_text_file(emp_input_path)
 #print(emp_rdd.collect())
