@@ -1,0 +1,11 @@
+empid|name|age|dept|salary|gender
+1|Daniel|32|IT|80000.50|'M'
+2|Alex|33|IT|78000.25|'M'
+3|Angelina|25|IT|93000.30|'F'
+4|Bob|44|Finance|90000.99|'M'
+5|Charlie|42|Finance|65000.99|'F'
+6|Tom|40|Finance|55000.90|'M'
+7|Harry|38|Audit|69000.10|'M'
+8|Steve|52|Audit|65000.99|'F'
+9|John|40|Audit|59000.90|'M'
+10|Diana|38|Audit|69000.10|'F'
