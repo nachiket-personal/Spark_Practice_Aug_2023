@@ -1,4 +1,4 @@
-from pyspark.sql.functions import col, sum, max
+from pyspark.sql.functions import col, sum, max, round
 from pyspark.storagelevel import StorageLevel
 
 from src.main.utilities.SparkSessionHandler import create_spark_session
@@ -26,6 +26,7 @@ emp_df = spark.read.option("header", True).csv(emp_input_path)
 '''
 
 #emp_df.cache()
+#emp_df.persist(StorageLevel.MEMORY_ONLY)
 #emp_df.persist(StorageLevel.MEMORY_AND_DISK)
 
 #emp_df.filter(col("dept") == "IT").show(10, False)
@@ -130,8 +131,15 @@ emp_df = spark.read.option("header", True).csv(emp_input_path)
 
 emp_df2 = emp_df.withColumn("salary", col("salary").cast("float"))
 #emp_df2.printSchema()
-
-#emp_df.groupBy(col("dept")).agg(sum("salary").alias("agg_sum_salary"), max("salary").alias("agg_max_salary")).show()
+'''
+root
+ |-- empid: string (nullable = true)
+ |-- name: string (nullable = true)
+ |-- age: string (nullable = true)
+ |-- dept: string (nullable = true)
+ |-- salary: float (nullable = true)
+ |-- gender: string (nullable = true)
+ '''
 
 #(emp_df2.groupBy(col("dept")).sum("salary").alias("sum_salary").show(10, False))
 '''
@@ -144,12 +152,37 @@ emp_df2 = emp_df.withColumn("salary", col("salary").cast("float"))
 +-------+---------------+
 '''
 
-(emp_df2
- .groupBy("dept", "gender")
- .max("salary")
- .select("dept", "gender", col("max(salary)")
- .alias("max_salary"))
- .show(10, False))
+# emp_df3 = emp_df2.groupBy(col("dept")).sum("salary")
+# emp_df3.show(10, False)
+'''
++-------+---------------+
+|dept   |sum(salary)    |
++-------+---------------+
+|Audit  |262002.08984375|
+|Finance|210002.87890625|
+|IT     |251001.046875  |
++-------+---------------+
+'''
+
+# (emp_df3
+#  .withColumn("sum_salary", round(col("sum(salary)"), 2))
+#  .show(10, False))
+'''
++-------+---------------+----------+
+|dept   |sum(salary)    |sum_salary|
++-------+---------------+----------+
+|Audit  |262002.08984375|262002.09 |
+|Finance|210002.87890625|210002.88 |
+|IT     |251001.046875  |251001.05 |
++-------+---------------+----------+
+'''
+
+# (emp_df2
+#  .groupBy("dept", "gender")
+#  .max("salary")
+#  .select("dept", "gender", col("max(salary)")
+#  .alias("max_salary"))
+#  .show(10, False))
 '''
 +-------+------+----------+
 |dept   |gender|max_salary|
@@ -163,3 +196,14 @@ emp_df2 = emp_df.withColumn("salary", col("salary").cast("float"))
 +-------+------+----------+
 '''
 
+
+emp_df2.groupBy(col("dept")).agg(sum("salary").alias("agg_sum_salary"), max("salary").alias("agg_max_salary")).show()
+'''
++-------+--------------+--------------+
+|   dept|agg_sum_salary|agg_max_salary|
++-------+--------------+--------------+
+|  Audit|     262002.09|      69000.10|
+|Finance|     210002.88|      90000.99|
+|     IT|     251001.05|      93000.30|
++-------+--------------+--------------+
+'''
