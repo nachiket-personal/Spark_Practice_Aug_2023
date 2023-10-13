@@ -9,3 +9,5 @@ empid,name,age,dept,salary,gender
 8,Steve,52,Audit,65000.99,'F'
 9,John,40,Audit,59000.90,'M'
 10,Diana,38,Audit,69000.10,'F'
+11,Al,41,Science,61000.90,'M'
+12,Dan,38,Electronics,69000.10,'F'
