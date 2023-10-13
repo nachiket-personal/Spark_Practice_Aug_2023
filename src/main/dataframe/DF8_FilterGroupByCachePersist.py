@@ -1,3 +1,4 @@
+from pyspark.sql import DataFrame
 from pyspark.sql.functions import col, sum, max, round
 from pyspark.storagelevel import StorageLevel
 
@@ -180,8 +181,7 @@ root
 # (emp_df2
 #  .groupBy("dept", "gender")
 #  .max("salary")
-#  .select("dept", "gender", col("max(salary)")
-#  .alias("max_salary"))
+#  .select("dept", "gender", col("max(salary)").alias("max_salary"))
 #  .show(10, False))
 '''
 +-------+------+----------+
@@ -197,13 +197,39 @@ root
 '''
 
 
-emp_df2.groupBy(col("dept")).agg(sum("salary").alias("agg_sum_salary"), max("salary").alias("agg_max_salary")).show()
+emp_df3: DataFrame = (emp_df2
+ .groupBy(col("dept"))
+ .agg(sum("salary").alias("agg_sum_salary"), max("salary").alias("agg_max_salary"))
+ .withColumn("agg_sum_salary", round("agg_sum_salary", 2))
+ .withColumn("agg_max_salary", round("agg_max_salary", 2)))
 '''
 +-------+--------------+--------------+
 |   dept|agg_sum_salary|agg_max_salary|
 +-------+--------------+--------------+
-|  Audit|     262002.09|      69000.10|
+|  Audit|     262002.09|       69000.1|
 |Finance|     210002.88|      90000.99|
-|     IT|     251001.05|      93000.30|
+|     IT|     251001.05|       93000.3|
++-------+--------------+--------------+
+'''
+
+emp_df3.orderBy("agg_sum_salary", ascending=False).show(10, False)
+'''
++-------+--------------+--------------+
+|dept   |agg_sum_salary|agg_max_salary|
++-------+--------------+--------------+
+|Audit  |262002.09     |69000.1       |
+|IT     |251001.05     |93000.3       |
+|Finance|210002.88     |90000.99      |
++-------+--------------+--------------+
+'''
+
+emp_df3.sort("agg_max_salary", ascending=False).show(10, False)
+'''
++-------+--------------+--------------+
+|dept   |agg_sum_salary|agg_max_salary|
++-------+--------------+--------------+
+|IT     |251001.05     |93000.3       |
+|Finance|210002.88     |90000.99      |
+|Audit  |262002.09     |69000.1       |
 +-------+--------------+--------------+
 '''
